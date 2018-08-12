@@ -203,6 +203,8 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         String json = gson.toJson(map);
         System.out.println("json = " + json);
 
+        // TODO:
+        /* DO A POST REQUEST HERE TO OFFLOAD THE DATA TO THE SERVER */
         //Intent mIntent = new Intent();
         //mIntent.putExtra(BarcodeObject, data);
         //setResult(CommonStatusCodes.SUCCESS, mIntent);

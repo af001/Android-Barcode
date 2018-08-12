@@ -92,23 +92,23 @@ public class CameraSource {
     private static final float ASPECT_RATIO_TOLERANCE = 0.01f;
 
     @StringDef({
-        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE,
-        Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO,
-        Camera.Parameters.FOCUS_MODE_AUTO,
-        Camera.Parameters.FOCUS_MODE_EDOF,
-        Camera.Parameters.FOCUS_MODE_FIXED,
-        Camera.Parameters.FOCUS_MODE_INFINITY,
-        Camera.Parameters.FOCUS_MODE_MACRO
+            Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE,
+            Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO,
+            Camera.Parameters.FOCUS_MODE_AUTO,
+            Camera.Parameters.FOCUS_MODE_EDOF,
+            Camera.Parameters.FOCUS_MODE_FIXED,
+            Camera.Parameters.FOCUS_MODE_INFINITY,
+            Camera.Parameters.FOCUS_MODE_MACRO
     })
     @Retention(RetentionPolicy.SOURCE)
     private @interface FocusMode {}
 
     @StringDef({
-        Camera.Parameters.FLASH_MODE_ON,
-        Camera.Parameters.FLASH_MODE_OFF,
-        Camera.Parameters.FLASH_MODE_AUTO,
-        Camera.Parameters.FLASH_MODE_RED_EYE,
-        Camera.Parameters.FLASH_MODE_TORCH
+            Camera.Parameters.FLASH_MODE_ON,
+            Camera.Parameters.FLASH_MODE_OFF,
+            Camera.Parameters.FLASH_MODE_AUTO,
+            Camera.Parameters.FLASH_MODE_RED_EYE,
+            Camera.Parameters.FLASH_MODE_TORCH
     })
     @Retention(RetentionPolicy.SOURCE)
     private @interface FlashMode {}
@@ -760,7 +760,10 @@ public class CameraSource {
 
         Camera.Parameters parameters = camera.getParameters();
 
-        parameters.setPictureSize(pictureSize.getWidth(), pictureSize.getHeight());
+        if (pictureSize != null) {
+            parameters.setPictureSize(pictureSize.getWidth(), pictureSize.getHeight());
+        }
+
         parameters.setPreviewSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
         parameters.setPreviewFpsRange(
                 previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
@@ -846,7 +849,7 @@ public class CameraSource {
         // the desired values and the actual values for width and height.  This is certainly not the
         // only way to select the best size, but it provides a decent tradeoff between using the
         // closest aspect ratio vs. using the closest pixel area.
-        SizePair selectedPair = null;
+        /*SizePair selectedPair = null;
         int minDiff = Integer.MAX_VALUE;
         for (SizePair sizePair : validPreviewSizes) {
             Size size = sizePair.previewSize();
@@ -856,9 +859,9 @@ public class CameraSource {
                 selectedPair = sizePair;
                 minDiff = diff;
             }
-        }
+        }*/
 
-        return selectedPair;
+        return validPreviewSizes.get(0);
     }
 
     /**
@@ -874,7 +877,9 @@ public class CameraSource {
         public SizePair(android.hardware.Camera.Size previewSize,
                         android.hardware.Camera.Size pictureSize) {
             mPreview = new Size(previewSize.width, previewSize.height);
-            mPicture = new Size(pictureSize.width, pictureSize.height);
+            if (pictureSize != null) {
+                mPicture = new Size(pictureSize.width, pictureSize.height);
+            }
         }
 
         public Size previewSize() {
@@ -1117,6 +1122,13 @@ public class CameraSource {
                     mPendingFrameData = null;
                 }
 
+                if (!mBytesToByteBuffer.containsKey(data)) {
+                    Log.d(TAG,
+                            "Skipping frame.  Could not find ByteBuffer associated with the image " +
+                                    "data from the camera.");
+                    return;
+                }
+
                 // Timestamp and frame ID are maintained here, which will give downstream code some
                 // idea of the timing of frames received and when frames were dropped along the way.
                 mPendingTimeMillis = SystemClock.elapsedRealtime() - mStartTimeMillis;
@@ -1149,7 +1161,7 @@ public class CameraSource {
 
             while (true) {
                 synchronized (mLock) {
-                    if (mActive && (mPendingFrameData == null)) {
+                    while (mActive && (mPendingFrameData == null)) {
                         try {
                             // Wait for the next frame to be received from the camera, since we
                             // don't have it yet.

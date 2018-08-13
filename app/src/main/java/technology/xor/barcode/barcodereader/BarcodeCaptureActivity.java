@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
@@ -311,12 +312,14 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
     @Override
     public void onObjectDetected(Barcode data) {
 
+        // If the QRcode was already scanned, then show a toast message
         if (map.containsValue(data.displayValue)) {
             // If QR already scanned, move on
             Snackbar.make(mGraphicOverlay, "QR already scanned!",
                     Snackbar.LENGTH_SHORT)
                     .show();
         } else {
+            // Set the number of QR codes to read. On the last one, send the message to the URL
             if (counter == 0) {
                 //data1 = data.displayValue;
                 map.put("1", data.displayValue);
@@ -330,12 +333,18 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                 //data4 = data.displayValue;
                 map.put("4", data.displayValue);
 
-                // Send a POST request to the server
+                // Send a POST request to the server. Increment the counter for every qrcode you have
+                // in the desktop application.
                 new SendPostRequest().execute(map.get("1"), map.get("2"), map.get("3"), map.get("4"), URL, codeName);
 
                 Snackbar.make(mGraphicOverlay, "Data successfully sent!",
                         Snackbar.LENGTH_SHORT)
                         .show();
+
+                // Return to the main UI
+                Intent returnMainUi = new Intent();
+                returnMainUi.putExtra(BarcodeObject, data);
+                setResult(CommonStatusCodes.SUCCESS, returnMainUi);
                 finish();
             }
 
@@ -352,7 +361,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         protected void onPreExecute(){}
 
         protected String doInBackground(String... params) {
-            // QRcode values
+            // QR code values
             String data1 = params[0];
             String data2 = params[1];
             String data3 = params[2];
@@ -421,7 +430,6 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                 }
             }
             catch(Exception e){
-                System.out.println(e.getMessage());
                 return "Exception: " + e.getMessage();
             }
 

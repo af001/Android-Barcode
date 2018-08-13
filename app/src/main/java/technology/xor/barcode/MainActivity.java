@@ -2,6 +2,7 @@ package technology.xor.barcode;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,10 +19,10 @@ import technology.xor.barcode.barcodereader.dialogs.UrlDialog;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int RC_BARCODE_CAPTURE = 9001;
+
     // use a compound button so either checkbox or switch widgets work.
     private TextView statusMessage;
-
-    private static final int RC_BARCODE_CAPTURE = 9001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,13 +75,18 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RC_BARCODE_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
-                    statusMessage.setText(R.string.barcode_success);
+                    Snackbar.make(findViewById(R.id.myRelativeLayout), "Message Successfully Sent!!",
+                            Snackbar.LENGTH_SHORT)
+                            .show();
                 } else {
-                    statusMessage.setText(R.string.barcode_failure);
+                    Snackbar.make(findViewById(R.id.myRelativeLayout), "Message Failed to Send!!",
+                            Snackbar.LENGTH_SHORT)
+                            .show();
                 }
             } else {
-                statusMessage.setText(String.format(getString(R.string.barcode_error),
-                        CommonStatusCodes.getStatusCodeString(resultCode)));
+                Snackbar.make(findViewById(R.id.myRelativeLayout), "Failed to Read Barcode!!",
+                        Snackbar.LENGTH_SHORT)
+                        .show();
             }
         }
         else {

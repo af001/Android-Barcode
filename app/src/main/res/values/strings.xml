@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Barcode</string>
-    <string name="action_settings">Settings</string>
 
     <!-- Barcode Scanner Activity -->
     <string name="ok">OK</string>
@@ -16,4 +15,8 @@
     <string name="barcode_failure">No barcode captured</string>
     <string name="barcode_error">"Error reading barcode: %1$s"</string>
     <string name="auto_capture">Auto Capture</string>
+    <string name="default_url">https://www.duckduckgo.com</string>
+    <string name="domain_name">Domain Name</string>
+    <string name="code_name">Code Name</string>
+    <string name="preference_file_key">6352737484736256473883837</string>
 </resources>

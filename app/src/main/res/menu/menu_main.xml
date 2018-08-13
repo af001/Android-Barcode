@@ -3,8 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="technology.xor.barcode.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/domain_settings"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="@string/domain_name"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/code_settings"
+        android:orderInCategory="100"
+        android:title="@string/code_name"
         app:showAsAction="never" />
 </menu>

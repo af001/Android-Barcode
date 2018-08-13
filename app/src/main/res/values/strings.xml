@@ -13,10 +13,11 @@
     <string name="barcode_error">Default values detected! These values can be modified under setting!</string>
     <string name="barcode_exists">QR already scanned!</string>
     <string name="barcode_instruct">Scan all qrcodes on the screen. The camera will close when complete!</string>
+    <string name="exit_application">Press EXIT to quit the application!</string>
     <string name="default_url">https://www.duckduckgo.com</string>
     <string name="default_name">ALABASTER</string>
     <string name="domain_name">Server URL</string>
     <string name="code_name">Team Name</string>
-    <string name="exit_name">Exit</string>
+    <string name="exit_name">EXIT</string>
     <string name="preference_file_key">6352737484736256473883837</string>
 </resources>

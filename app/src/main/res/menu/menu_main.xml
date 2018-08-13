@@ -6,19 +6,16 @@
     <item
         android:id="@+id/domain_settings"
         android:orderInCategory="98"
+        android:icon="@drawable/baseline_http_white_48dp"
         android:title="@string/domain_name"
         android:textColor="@color/text"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/code_settings"
         android:orderInCategory="99"
+        android:icon="@drawable/baseline_account_circle_white_48dp"
         android:textColor="@color/text"
         android:title="@string/code_name"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/exit_settings"
-        android:orderInCategory="100"
-        android:textColor="@color/text"
-        android:title="@string/exit_name"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
+
 </menu>

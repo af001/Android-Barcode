@@ -2,7 +2,9 @@ package technology.xor.barcode;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,9 +64,41 @@ public class MainActivity extends AppCompatActivity {
                 CodeNameDialog codeNameDialog = new CodeNameDialog();
                 codeNameDialog.AlertUser(MainActivity.this);
                 return true;
+            //case R.id.exit_settings:
+            //    finishAffinity();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    boolean doubleBackToExitPressedOnce = false;
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                    doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+
+        Snackbar.make(findViewById(R.id.myRelativeLayout), R.string.exit_application,
+                Snackbar.LENGTH_LONG)
+                .setAction(R.string.exit_name, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finishAffinity();
+                    }
+                })
+                .show();
     }
 
     @Override

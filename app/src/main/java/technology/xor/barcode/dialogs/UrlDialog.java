@@ -1,4 +1,4 @@
-package technology.xor.barcode.barcodereader.dialogs;
+package technology.xor.barcode.dialogs;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -70,7 +70,7 @@ public class UrlDialog {
                                 editor.apply();
                             } else {
                                 AlertUser(context);
-                                label.setError("Invalid domain name!");
+                                label.setError("Invalid web url!");
                             }
                         }
                     }

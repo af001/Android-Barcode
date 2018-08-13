@@ -1,22 +1,22 @@
 <resources>
-    <string name="app_name">Barcode</string>
+    <string name="app_name">Swift</string>
 
     <!-- Barcode Scanner Activity -->
     <string name="ok">OK</string>
-    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
-    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
-    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
-    <string name="title_activity_main">Barcode Reader Sample</string>
-    <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detecting barcodes</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission. The application will now exit.</string>
+    <string name="low_storage_error">Barcode reader dependencies cannot be downloaded due to low device storage</string>
+    <string name="barcode_header">Click READ BARCODE to start scanning messages</string>
     <string name="read_barcode">Read Barcode</string>
-    <string name="auto_focus">Auto Focus</string>
-    <string name="use_flash">Use Flash</string>
-    <string name="barcode_success">Barcode read successfully</string>
-    <string name="barcode_failure">No barcode captured</string>
-    <string name="barcode_error">"Error reading barcode: %1$s"</string>
-    <string name="auto_capture">Auto Capture</string>
+    <string name="barcode_success">Message Successfully Sent!!</string>
+    <string name="barcode_failure">Message Failed to Send!</string>
+    <string name="barcode_error">Default values detected! These values can be modified under setting!</string>
+    <string name="barcode_exists">QR already scanned!</string>
+    <string name="barcode_instruct">Scan all qrcodes on the screen. The camera will close when complete!</string>
     <string name="default_url">https://www.duckduckgo.com</string>
-    <string name="domain_name">Domain Name</string>
-    <string name="code_name">Code Name</string>
+    <string name="default_name">ALABASTER</string>
+    <string name="domain_name">Server URL</string>
+    <string name="code_name">Team Name</string>
+    <string name="exit_name">Exit</string>
     <string name="preference_file_key">6352737484736256473883837</string>
 </resources>

@@ -1,4 +1,4 @@
-package technology.xor.barcode.barcodereader.dialogs;
+package technology.xor.barcode.dialogs;
 
 import android.content.Context;
 import android.content.DialogInterface;

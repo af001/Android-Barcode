@@ -1,15 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/main_background"
     tools:context="technology.xor.barcode.MainActivity">
     <item
         android:id="@+id/domain_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="98"
         android:title="@string/domain_name"
+        android:textColor="@color/text"
         app:showAsAction="never" />
     <item
         android:id="@+id/code_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="99"
+        android:textColor="@color/text"
         android:title="@string/code_name"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/exit_settings"
+        android:orderInCategory="100"
+        android:textColor="@color/text"
+        android:title="@string/exit_name"
         app:showAsAction="never" />
 </menu>

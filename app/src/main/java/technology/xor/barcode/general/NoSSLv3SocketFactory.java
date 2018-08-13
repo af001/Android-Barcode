@@ -1,4 +1,4 @@
-package technology.xor.barcode;
+package technology.xor.barcode.general;
 
 /*Copyright 2015 Bhavit Singh Sengar
 Licensed under the Apache License, Version 2.0 (the "License");

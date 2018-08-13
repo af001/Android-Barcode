@@ -36,7 +36,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -60,7 +59,7 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import technology.xor.barcode.NoSSLv3SocketFactory;
+import technology.xor.barcode.general.NoSSLv3SocketFactory;
 import technology.xor.barcode.R;
 import technology.xor.barcode.barcodereader.ui.camera.CameraSource;
 import technology.xor.barcode.barcodereader.ui.camera.CameraSourcePreview;
@@ -72,7 +71,7 @@ import technology.xor.barcode.barcodereader.ui.camera.GraphicOverlay;
  * size, and ID of each barcode.
  */
 public final class BarcodeCaptureActivity extends AppCompatActivity implements BarcodeGraphicTracker.BarcodeDetectorListener {
-    private static final String TAG = "Barcode-reader";
+    private static final String TAG = "SWIFT-CAPTURE";
 
     // intent request code to handle updating play services if needed.
     private static final int RC_HANDLE_GMS = 9001;
@@ -108,30 +107,30 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         super.onCreate(icicle);
         setContentView(R.layout.barcode_capture);
 
-        mPreview = (CameraSourcePreview) findViewById(R.id.preview);
-        mGraphicOverlay = (GraphicOverlay<BarcodeGraphic>) findViewById(R.id.graphicOverlay);
+        mPreview = findViewById(R.id.preview);
+        mGraphicOverlay = findViewById(R.id.graphicOverlay);
 
-        // Load the shared preferences.
+        // Load the shared preferences and extract url and code name
         SharedPreferences sharedPref = this.getSharedPreferences(
                 this.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         URL = sharedPref.getString("domain_name", "https://www.duckduckgo.com");
         codeName = sharedPref.getString("code_name", "ALABASTER");
 
         // Check for default values. If they exist, go back to the main screen.
-        if (URL == "https://www.duckduckgo.com") {
-            Snackbar.make(mGraphicOverlay, "Please set a domain name to continue!",
-                    Snackbar.LENGTH_LONG)
-                    .show();
-            finish();
-        } else if (codeName == "ALABASTER") {
-            Snackbar.make(mGraphicOverlay, "Please set a code name to continue!",
-                    Snackbar.LENGTH_LONG)
-                    .show();
+        boolean defaultsDetected = URL.equals(getString(R.string.default_url)) ||
+                codeName.equals(getString(R.string.default_name));
+
+        // Exit back to the main UI thread and return a value of cancelled to display the appropriate
+        // snackbar message
+        if (defaultsDetected) {
+            Intent returnMainUi = new Intent();
+            returnMainUi.putExtra("Result", "defaults");
+            setResult(CommonStatusCodes.CANCELED, returnMainUi);
             finish();
         }
 
         // read parameters from the intent used to launch the activity.
-        autoFocus = getIntent().getBooleanExtra(AutoFocus, false);
+        autoFocus = getIntent().getBooleanExtra(AutoFocus, true);
         useFlash = getIntent().getBooleanExtra(UseFlash, false);
         autoCapture = getIntent().getBooleanExtra(AutoCapture, false);
 
@@ -143,9 +142,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         else
             requestCameraPermission();
 
-        Snackbar.make(mGraphicOverlay, "Scan all qrcodes. Application will exit when done!",
-                Snackbar.LENGTH_SHORT)
-                .show();
+        MakeSnakckbar(getString(R.string.barcode_instruct), 1);
     }
 
     @Override
@@ -205,7 +202,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
             boolean hasLowStorage = registerReceiver(null, lowstorageFilter) != null;
 
             if (hasLowStorage) {
-                Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show();
+                MakeSnakckbar(getString(R.string.low_storage_error), 1);
                 Log.w(TAG, getString(R.string.low_storage_error));
             }
         }
@@ -282,7 +279,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Multitracker sample")
+        builder.setTitle("Barcode Scanner")
                 .setMessage(R.string.no_camera_permission)
                 .setPositiveButton(R.string.ok, listener)
                 .show();
@@ -315,33 +312,24 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
         // If the QRcode was already scanned, then show a toast message
         if (map.containsValue(data.displayValue)) {
             // If QR already scanned, move on
-            Snackbar.make(mGraphicOverlay, "QR already scanned!",
-                    Snackbar.LENGTH_SHORT)
-                    .show();
+            MakeSnakckbar(getString(R.string.barcode_exists), 0);
+
         } else {
             // Set the number of QR codes to read. On the last one, send the message to the URL
             if (counter == 0) {
-                //data1 = data.displayValue;
                 map.put("1", data.displayValue);
             } else if (counter == 1) {
-                //data2 = data.displayValue;
                 map.put("2", data.displayValue);
             } else if (counter == 2) {
-                //data3 = data.displayValue;
                 map.put("3", data.displayValue);
             } else if (counter == 3) {
-                //data4 = data.displayValue;
                 map.put("4", data.displayValue);
 
                 // Send a POST request to the server. Increment the counter for every qrcode you have
                 // in the desktop application.
                 new SendPostRequest().execute(map.get("1"), map.get("2"), map.get("3"), map.get("4"), URL, codeName);
 
-                Snackbar.make(mGraphicOverlay, "Data successfully sent!",
-                        Snackbar.LENGTH_SHORT)
-                        .show();
-
-                // Return to the main UI
+                // Return to the main UI with a success code
                 Intent returnMainUi = new Intent();
                 returnMainUi.putExtra(BarcodeObject, data);
                 setResult(CommonStatusCodes.SUCCESS, returnMainUi);
@@ -350,8 +338,18 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
 
             // Increment counter and display results to the user
             counter=counter+1;
-            Snackbar.make(mGraphicOverlay, "QR " + counter + " Captured!",
+            MakeSnakckbar("QR" + counter + " Captured!", 0);
+        }
+    }
+
+    private void MakeSnakckbar(String msg, int length) {
+        if (length == 0) {
+            Snackbar.make(mGraphicOverlay, msg,
                     Snackbar.LENGTH_SHORT)
+                    .show();
+        } else {
+            Snackbar.make(mGraphicOverlay, msg,
+                    Snackbar.LENGTH_LONG)
                     .show();
         }
     }
@@ -408,7 +406,7 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
                 int responseCode=conn.getResponseCode();
 
                 if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    System.out.println("RECEIVED OK FROM SERVER");
+                    Log.d(TAG, "RECEIVED OK FROM SERVER");
 
                     BufferedReader in=new BufferedReader(new
                             InputStreamReader(

@@ -14,23 +14,20 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.CommonStatusCodes;
 
 import technology.xor.barcode.barcodereader.BarcodeCaptureActivity;
-import technology.xor.barcode.barcodereader.dialogs.CodeNameDialog;
-import technology.xor.barcode.barcodereader.dialogs.UrlDialog;
+import technology.xor.barcode.dialogs.CodeNameDialog;
+import technology.xor.barcode.dialogs.UrlDialog;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_BARCODE_CAPTURE = 9001;
-
-    // use a compound button so either checkbox or switch widgets work.
-    private TextView statusMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        statusMessage = (TextView) findViewById(R.id.status_message);
-        Button scanBtn = (Button) findViewById(R.id.read_barcode);
+        TextView statusMessage = findViewById(R.id.status_message);
+        Button scanBtn = findViewById(R.id.read_barcode);
 
         statusMessage.setText(R.string.barcode_header);
 
@@ -75,22 +72,28 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RC_BARCODE_CAPTURE) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
-                    Snackbar.make(findViewById(R.id.myRelativeLayout), "Message Successfully Sent!!",
-                            Snackbar.LENGTH_SHORT)
-                            .show();
+                    MakeSnakckbar(getString(R.string.barcode_success), 0);
                 } else {
-                    Snackbar.make(findViewById(R.id.myRelativeLayout), "Message Failed to Send!!",
-                            Snackbar.LENGTH_SHORT)
-                            .show();
+                    MakeSnakckbar(getString(R.string.barcode_failure), 0);
                 }
-            } else {
-                Snackbar.make(findViewById(R.id.myRelativeLayout), "Failed to Read Barcode!!",
-                        Snackbar.LENGTH_SHORT)
-                        .show();
+            } else if (resultCode == CommonStatusCodes.CANCELED){
+                MakeSnakckbar(getString(R.string.barcode_error), 1);
             }
         }
         else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void MakeSnakckbar(String msg, int length) {
+        if (length == 0) {
+            Snackbar.make(findViewById(R.id.myRelativeLayout), msg,
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+        } else {
+            Snackbar.make(findViewById(R.id.myRelativeLayout), msg  ,
+                    Snackbar.LENGTH_LONG)
+                    .show();
         }
     }
 }

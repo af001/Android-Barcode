@@ -103,8 +103,8 @@ public final class BarcodeCaptureActivity extends AppCompatActivity implements B
      * Initializes the UI and creates the detector pipeline.
      */
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
         setContentView(R.layout.barcode_capture);
 
         mPreview = findViewById(R.id.preview);
